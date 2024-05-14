@@ -5,8 +5,6 @@ from itemadapter import ItemAdapter
 class RedisWriterPipeline:
     def __init__(self) -> None:
         self.idx = 0
-
-    def open_spider(self, spider):
         self.redis_client = redis.Redis(host='localhost', port=6379, username="default", password="mypassword", decode_responses=True)
 
     def process_item(self, item, spider):
@@ -15,3 +13,6 @@ class RedisWriterPipeline:
             'url': item['url']
         })
         self.idx += 1
+
+    def get(self, key):
+        return self.redis_client.hgetall(key)

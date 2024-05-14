@@ -1,6 +1,6 @@
 from scrapers.pages.hackernews_scraper import HackernewsSpider
 from large_models.llama3_processor import Llama3Processor
-from large_models.prompters import hackernews_prompter
+from large_models.prompters import hackernews_topics_prompter
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 from scrapers.pipelines import RedisWriterPipeline
@@ -18,10 +18,19 @@ if __name__ == "__main__":
     process = CrawlerProcess({**get_project_settings(), **custom_settings})
 
     crawler = process.create_crawler(HackernewsSpider)
-
     process.crawl(HackernewsSpider)
     process.start()
 
-    # processor = Llama3Processor()
-    # response = processor.process("Hello, llama. Tell me what was the biggest event in 2019")
-    # print(response)
+    redisPipelineReader = RedisWriterPipeline()
+
+    topics = ""
+    for i in range(1000):
+        topics += f"{(redisPipelineReader.get(f'item-{i}')['title'])};"
+
+    processor = Llama3Processor()
+    prompter = hackernews_topics_prompter.HackerNewsTopicsPrompter(topics)
+
+    chain = prompter.generate_prompt() | processor.ollama
+    
+    print(chain.invoke({"input": "I am interested what happens in Google company"}))
+    

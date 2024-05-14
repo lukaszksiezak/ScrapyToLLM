@@ -15,7 +15,7 @@ class Scraper(CrawlSpider):
     allowed_domains = []
     start_urls = []
 
-    def parse(self, response):
+    def parse_item(self, response):
         """
         Abstract method to be implemented by all scrapers
         """

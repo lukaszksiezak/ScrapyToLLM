@@ -14,15 +14,15 @@ class HackernewsSpider(Scraper):
     allowed_hosts = ['news.ycombinator.com']
     start_urls = ['https://news.ycombinator.com/news?p=1']
 
-    rules = (Rule(LinkExtractor(allow=r'news\?p=[0-9]'),
+    rules = (Rule(LinkExtractor(allow=r'news\?p=[0-2]'), #[0-9]'),
                   callback="parse_item",
                   follow=True),)
 
     def parse_item(self, response):
 
+        items = []
         selector = Selector(response)
         links = selector.xpath('//td[@class="title"]').xpath('//span[@class="titleline"]')
-        items = []
 
         for link in links:
             title = link.xpath("a/text()").extract()
@@ -36,4 +36,7 @@ class HackernewsSpider(Scraper):
                 item['url'] = url
 
                 items.append(item)
-        return items
+                yield item
+
+    def closed(self, reason):
+        print(f"Spider finished scraping. Reason: {reason}")

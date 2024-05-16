@@ -1,4 +1,6 @@
 
+https://lukaszksiezak.github.io/ScrapyToLLM/
+
 # Hack the Newsfeed with LLM AI in 15 mins
 
 In this article, I delve into a simple (yet powerful) project that leverages the power of LLMs to create a personalized tech-news recommendation system. The application scrapes Hacker News and suggests articles to users, based on their preferences. Utilizing the Ollama and LangChain libraries, the system employs the LLAMA3 model for natural language understanding and Redis as an in-memory storage solution for managing scraped data.
